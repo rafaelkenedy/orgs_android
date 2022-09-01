@@ -2,17 +2,16 @@ package com.rafael.orgs.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
-
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.rafael.orgs.R
 import com.rafael.orgs.database.AppDatabase
 import com.rafael.orgs.databinding.ActivityListaProdutosBinding
-import com.rafael.orgs.model.Produto
 import com.rafael.orgs.ui.recyclerview.adapter.ListaProdutosAdapter
+import kotlinx.coroutines.launch
 
 class ListaProdutosActivity : AppCompatActivity() {
 
@@ -20,22 +19,27 @@ class ListaProdutosActivity : AppCompatActivity() {
     private val adapter by lazy { ListaProdutosAdapter(this) }
     private val binding by lazy { ActivityListaProdutosBinding.inflate(layoutInflater) }
     private val produtoDao by lazy { AppDatabase.instancia(this).produtoDao() }
+    private val dao by lazy {
+        val db = AppDatabase.instancia(this)
+        db.produtoDao()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        runBlocking {
+//            launch {
+//                delay(2000L)
+//            }
+//        }
         setContentView(binding.root)
         configuraRecyclerView()
         configuraFab()
-    }
+        lifecycleScope.launch {
 
-    override fun onResume() {
-        super.onResume()
-
-        val db = AppDatabase.instancia(this)
-        val produtoDao = db.produtoDao()
-        //produtoDao.delete()
-        adapter.atualiza(produtoDao.buscaTodos())
-
+            dao.buscaTodos().collect { produtos ->
+                adapter.atualiza(produtos)
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -43,27 +47,36 @@ class ListaProdutosActivity : AppCompatActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val produtosOrdenado: List<Produto>? = when (item.itemId) {
-            R.id.menu_lista_produtos_ordenar_nome_asc ->
-                produtoDao.buscaTodosOrdenadoPorNomeAsc()
-            R.id.menu_lista_produtos_ordenar_nome_desc ->
-                produtoDao.buscaTodosOrdenadoPorNomeDesc()
-            R.id.menu_lista_produtos_ordenar_descricao_asc ->
-                produtoDao.buscaTodosOrdenadoPorDescricaoAsc()
-            R.id.menu_lista_produtos_ordenar_descricao_desc ->
-                produtoDao.buscaTodosOrdenadoPorDescricaoDesc()
-            R.id.menu_lista_produtos_ordenar_valor_asc ->
-                produtoDao.buscaTodosOrdenadoPorValorAsc()
-            R.id.menu_lista_produtos_ordenar_valor_desc ->
-                produtoDao.buscaTodosOrdenadoPorValorDesc()
-            R.id.menu_lista_produtos_ordenar_sem_ordem ->
-                produtoDao.buscaTodos()
-            else -> null
+        lifecycleScope.launch {
+            when (item.itemId) {
+                R.id.menu_lista_produtos_ordenar_nome_asc ->
+                    produtoDao.buscaTodosOrdenadoPorNomeAsc()
+                R.id.menu_lista_produtos_ordenar_nome_desc ->
+                    produtoDao.buscaTodosOrdenadoPorNomeDesc()
+                R.id.menu_lista_produtos_ordenar_descricao_asc ->
+                    produtoDao.buscaTodosOrdenadoPorDescricaoAsc()
+                R.id.menu_lista_produtos_ordenar_descricao_desc ->
+                    produtoDao.buscaTodosOrdenadoPorDescricaoDesc()
+                R.id.menu_lista_produtos_ordenar_valor_asc ->
+                    produtoDao.buscaTodosOrdenadoPorValorAsc()
+                R.id.menu_lista_produtos_ordenar_valor_desc ->
+                    produtoDao.buscaTodosOrdenadoPorValorDesc()
+                R.id.menu_lista_produtos_ordenar_sem_ordem ->
+                    produtoDao.buscaTodos()
+                else -> null
+            }?.collect { produtos ->
+                adapter.atualiza(produtos)
+            }
         }
-        produtosOrdenado?.let {
-            adapter.atualiza(it)
-        }
+
+
+
+
+
+
+
         return super.onOptionsItemSelected(item)
     }
 

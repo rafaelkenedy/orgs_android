@@ -2,11 +2,13 @@ package com.rafael.orgs.ui.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.rafael.orgs.database.AppDatabase
 import com.rafael.orgs.databinding.ActivityFormularioProdutoBinding
 import com.rafael.orgs.extensions.tentaCarregarImagem
 import com.rafael.orgs.model.Produto
 import com.rafael.orgs.ui.dialog.FormImgDialog
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
 class FormularioProdutoActivity : AppCompatActivity() {
@@ -32,23 +34,31 @@ class FormularioProdutoActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        produtoDao.buscaPorId(produtoId)?.let {
-            title = "Alterar produto"
-            preencheCampos(it)
+        tentaBuscarProduto()
+    }
+
+    private fun tentaBuscarProduto() {
+
+
+        lifecycleScope.launch {
+            produtoDao.buscaPorId(produtoId).collect {produto->
+                title = "Alterar produto"
+                if (produto != null) {
+                    preencheCampos(produto)
+                }
+            }
         }
     }
 
     private fun configuraBotaoSalvar() {
         val botaoSalvar = binding.botaoSalvar
 
-        val db = AppDatabase.instancia(this)
-        val produtoDao = db.produtoDao()
-
         botaoSalvar.setOnClickListener {
             val produtoNovo = criaProduto()
-
-            produtoDao.salva(produtoNovo)
-            finish()
+            lifecycleScope.launch {
+                produtoDao.salva(produtoNovo)
+                finish()
+            }
         }
     }
 

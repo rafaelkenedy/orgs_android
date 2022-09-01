@@ -3,9 +3,11 @@ package com.rafael.orgs.ui.recyclerview.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.rafael.orgs.R
 import com.rafael.orgs.databinding.ProdutoItemBinding
@@ -38,16 +40,16 @@ class ListaProdutosAdapter(
 
         init {
 
-            itemView.setOnLongClickListener {
-                PopupMenu(context, itemView).apply {
-                    menuInflater.inflate(
-                        R.menu.menu_detalhes_produto,
-                        menu
-                    )
-                    setOnMenuItemClickListener(this@ViewHolder)
-                }.show()
-                true
-            }
+//            itemView.setOnLongClickListener {
+//                PopupMenu(context, itemView).apply {
+//                    menuInflater.inflate(
+//                        R.menu.menu_detalhes_produto,
+//                        menu
+//                    )
+//                    setOnMenuItemClickListener(this@ViewHolder)
+//                }.show()
+//                true
+//            }
 
             itemView.setOnClickListener {
                 if (::produto.isInitialized) {
@@ -55,20 +57,21 @@ class ListaProdutosAdapter(
                 }
             }
 
-//            itemView.setOnCreateContextMenuListener { menu, _, _ ->
-//                menu.add(Menu.NONE, 1, Menu.NONE, "editar").setOnMenuItemClickListener {
-//                    Toast.makeText(context, "clicou em editar ${produto.nome}", Toast.LENGTH_SHORT)
-//                        .show()
-//                    quandoClicaEmEditar(produto)
-//                    true
-//                }
-//                menu.add(Menu.NONE, 2, Menu.NONE, "remover").setOnMenuItemClickListener {
-//                    Toast.makeText(context, "clicou em remover ${produto.nome}", Toast.LENGTH_SHORT)
-//                        .show()
-//                    quandoClicaEmRemover(produto)
-//                    true
-//                }
-//            }
+            itemView.setOnCreateContextMenuListener { menu, _, _ ->
+
+                menu.add(Menu.NONE, 1, Menu.NONE, "editar").setOnMenuItemClickListener {
+                    Toast.makeText(context, "clicou em editar ${produto.nome}", Toast.LENGTH_SHORT)
+                        .show()
+                    quandoClicaEmEditar(produto)
+                    true
+                }
+                menu.add(Menu.NONE, 2, Menu.NONE, "remover").setOnMenuItemClickListener {
+                    Toast.makeText(context, "clicou em remover ${produto.nome}", Toast.LENGTH_SHORT)
+                        .show()
+                    quandoClicaEmRemover(produto)
+                    true
+                }
+            }
         }
 
         override fun onMenuItemClick(item: MenuItem?): Boolean {

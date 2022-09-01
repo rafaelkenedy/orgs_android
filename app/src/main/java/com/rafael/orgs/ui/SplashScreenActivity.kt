@@ -17,7 +17,7 @@ class SplashScreenActivity : AppCompatActivity() {
 
         Thread {
             try {
-                Thread.sleep(2000)
+                Thread.sleep(1500)
                 mostrarListaDeProdutos()
             } catch (e: Exception) {
                 throw e
