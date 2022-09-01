@@ -92,7 +92,7 @@ class DetalhesProdutoActivity : AppCompatActivity() {
 
     private fun tentaCarregarProduto() {
 
-        produtoId = intent.getLongExtra(CHAVE_PRODUTO_ID, 0L)
+        produtoId = intent.getLongExtra(CHAVE_PRODUTO_ID, produtoId)
     }
 
     private fun preencheCampos(produto: Produto) {

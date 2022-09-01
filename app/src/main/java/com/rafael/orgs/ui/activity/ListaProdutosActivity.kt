@@ -13,10 +13,12 @@ import com.rafael.orgs.databinding.ActivityListaProdutosBinding
 import com.rafael.orgs.ui.recyclerview.adapter.ListaProdutosAdapter
 import kotlinx.coroutines.launch
 
+
 class ListaProdutosActivity : AppCompatActivity() {
 
     private val adapter by lazy { ListaProdutosAdapter(this) }
     private val binding by lazy { ActivityListaProdutosBinding.inflate(layoutInflater) }
+
 
     //private val produtoDao by lazy { AppDatabase.instancia(this).produtoDao() }
     private val dao by lazy { AppDatabase.instancia(this).produtoDao() }
@@ -100,7 +102,7 @@ class ListaProdutosActivity : AppCompatActivity() {
             vaiParaDetalhesProduto(produto.id)
         }
         adapter.quandoClicaEmEditar = { produto ->
-
+            
             vaiParaFormularioProduto(produto.id)
         }
         adapter.quandoClicaEmRemover = {
