@@ -68,15 +68,19 @@ class DetalhesProdutoActivity : AppCompatActivity() {
             }
             R.id.menu_detalhes_produto_editar -> {
 
-                Intent(this, FormularioProdutoActivity::class.java).apply {
-
-                    putExtra(CHAVE_PRODUTO_ID, produtoId)
-                    startActivity(this)
-                }
+                vaiParaFormularioProduto()
             }
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun vaiParaFormularioProduto() {
+        Intent(this, FormularioProdutoActivity::class.java).apply {
+
+            putExtra(CHAVE_PRODUTO_ID, produtoId)
+            startActivity(this)
+        }
     }
 
 

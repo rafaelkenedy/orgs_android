@@ -7,7 +7,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.rafael.orgs.R
 import com.rafael.orgs.databinding.ProdutoItemBinding
@@ -29,7 +28,8 @@ class ListaProdutosAdapter(
 
     private val produtos = produtos.toMutableList()
 
-    inner class ViewHolder(binding: ProdutoItemBinding) : RecyclerView.ViewHolder(binding.root), PopupMenu.OnMenuItemClickListener {
+    inner class ViewHolder(binding: ProdutoItemBinding) : RecyclerView.ViewHolder(binding.root),
+        PopupMenu.OnMenuItemClickListener {
 
         private lateinit var produto: Produto
         private val nome = binding.produtoItemNome
@@ -60,14 +60,12 @@ class ListaProdutosAdapter(
             itemView.setOnCreateContextMenuListener { menu, _, _ ->
 
                 menu.add(Menu.NONE, 1, Menu.NONE, "editar").setOnMenuItemClickListener {
-                    Toast.makeText(context, "clicou em editar ${produto.nome}", Toast.LENGTH_SHORT)
-                        .show()
+
                     quandoClicaEmEditar(produto)
                     true
                 }
                 menu.add(Menu.NONE, 2, Menu.NONE, "remover").setOnMenuItemClickListener {
-                    Toast.makeText(context, "clicou em remover ${produto.nome}", Toast.LENGTH_SHORT)
-                        .show()
+
                     quandoClicaEmRemover(produto)
                     true
                 }
