@@ -16,26 +16,32 @@
         android:theme="@style/Theme.Orgs"
         tools:targetApi="31">
         <activity
-            android:name=".ui.SplashScreenActivity"
-            android:exported="true"
-            android:theme="@style/AppCompat.TelaCheia">
+            android:name=".ui.activity.FormularioCadastroUsuarioActivity"
+            android:exported="false"
+            android:label="@string/title_activity_formulario_cadastro_usuario"
+            android:theme="@style/Theme.Orgs.NoActionBar" />
+        <activity
+            android:name=".ui.activity.LoginActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name=".ui.activity.DetalhesProdutoActivity"
-            android:exported="true">
+            android:name=".ui.SplashScreenActivity"
+            android:exported="true"
+            android:theme="@style/AppCompat.TelaCheia">
 
         </activity>
+        <activity
+            android:name=".ui.activity.DetalhesProdutoActivity"
+            android:exported="true" />
         <activity android:name=".ui.activity.FormularioProdutoActivity" />
         <activity
             android:name=".ui.activity.ListaProdutosActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
 
         <meta-data
             android:name="preloaded_fonts"
