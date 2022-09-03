@@ -6,10 +6,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.lifecycleScope
 import com.rafael.orgs.R
 import com.rafael.orgs.database.AppDatabase
 import com.rafael.orgs.databinding.ActivityListaProdutosBinding
+import com.rafael.orgs.extensions.vaiPara
 import com.rafael.orgs.ui.recyclerview.adapter.ListaProdutosAdapter
 import dataStore
 import kotlinx.coroutines.launch
@@ -41,22 +43,23 @@ class ListaProdutosActivity : AppCompatActivity() {
                 }
             }
 
-            dataStore.data.collect{preferences ->
-                preferences[usuarioLogadoPreferences]?. let { usuarioId ->
-                    usuarioDao.buscaPorId(usuarioId).collect{
+            launch {
+                dataStore.data.collect { preferences ->
+                    preferences[usuarioLogadoPreferences]?.let { usuarioId ->
+                        launch {
+                            usuarioDao.buscaPorId(usuarioId).collect {
 
-                    }
+                            }
+                        }
+                    } ?: vaiParaLogin()
                 }
             }
-
-//            intent.getStringExtra("CHAVE_USUARIO_ID")?.let { usuarioId ->
-//                usuarioDao.buscaPorId(usuarioId).collect {
-//                    Toast.makeText(this@ListaProdutosActivity, "${it.nome} logado!", Toast.LENGTH_SHORT)
-//                        .show()
-//                }
-//
-//            }
         }
+    }
+
+    private fun vaiParaLogin() {
+        vaiPara(LoginActivity::class.java)
+        finish()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -68,8 +71,18 @@ class ListaProdutosActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        lifecycleScope.launch {
 
+        when (item.itemId) {
+            R.id.menu_lista_produtos_sair_do_app -> {
+                lifecycleScope.launch {
+                    dataStore.edit { preferences ->
+                        preferences.remove(usuarioLogadoPreferences)
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
             when (item.itemId) {
 
                 R.id.menu_lista_produtos_ordenar_nome_asc ->

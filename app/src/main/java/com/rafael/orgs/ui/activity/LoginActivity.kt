@@ -4,11 +4,9 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.lifecycleScope
 import com.rafael.orgs.database.AppDatabase
 import com.rafael.orgs.databinding.ActivityLoginBinding
-import com.rafael.orgs.extensions.toHash
 import com.rafael.orgs.extensions.vaiPara
 import dataStore
 import kotlinx.coroutines.launch
@@ -44,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
     private fun configuraBotaoEntrar() {
         binding.activityLoginBotaoEntrar.setOnClickListener {
             val usuario = binding.activityLoginUsuario.text.toString()
-            val senha = binding.activityLoginSenha.text.toString().toHash()
+            val senha = binding.activityLoginSenha.text.toString()
             lifecycleScope.launch {
 
                 usuarioDao.autentica(usuario, senha)?.let { usuario ->
@@ -52,9 +50,8 @@ class LoginActivity : AppCompatActivity() {
                         preferences[usuarioLogadoPreferences] = usuario.id
 
                     }
-                    vaiPara(ListaProdutosActivity::class.java) {
-
-                    }
+                    vaiPara(ListaProdutosActivity::class.java)
+                    finish()
                 } ?: Toast.makeText(this@LoginActivity, "Falha na autenticação", Toast.LENGTH_SHORT)
                     .show()
             }
