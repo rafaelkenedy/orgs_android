@@ -8,7 +8,9 @@ import com.rafael.orgs.databinding.ActivityFormularioProdutoBinding
 import com.rafael.orgs.extensions.tentaCarregarImagem
 import com.rafael.orgs.model.Produto
 import com.rafael.orgs.ui.dialog.FormImgDialog
+import dataStore
 import kotlinx.coroutines.launch
+import usuarioLogadoPreferences
 import java.math.BigDecimal
 
 class FormularioProdutoActivity : AppCompatActivity() {
@@ -17,6 +19,7 @@ class FormularioProdutoActivity : AppCompatActivity() {
     private var url: String? = null
     private var produtoId = 0L
     private val produtoDao by lazy { AppDatabase.instancia(this).produtoDao() }
+    private val usuarioDao by lazy { AppDatabase.instancia(this).usuarioDao() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,18 +33,24 @@ class FormularioProdutoActivity : AppCompatActivity() {
                 binding.produtoImagem.tentaCarregarImagem(url)
             }
         }
+        tentaBuscarProduto()
+        lifecycleScope.launch {
+            dataStore.data.collect { preferences ->
+                preferences[usuarioLogadoPreferences]?.let { usuarioId ->
+                    usuarioDao.buscaPorId(usuarioId).collect {
+
+                    }
+                }
+            }
+        }
     }
 
-    override fun onResume() {
-        super.onResume()
-        tentaBuscarProduto()
-    }
 
     private fun tentaBuscarProduto() {
 
 
         lifecycleScope.launch {
-            produtoDao.buscaPorId(produtoId).collect {produto->
+            produtoDao.buscaPorId(produtoId).collect { produto ->
                 title = "Alterar produto"
                 if (produto != null) {
                     preencheCampos(produto)

@@ -11,7 +11,9 @@ import com.rafael.orgs.R
 import com.rafael.orgs.database.AppDatabase
 import com.rafael.orgs.databinding.ActivityListaProdutosBinding
 import com.rafael.orgs.ui.recyclerview.adapter.ListaProdutosAdapter
+import dataStore
 import kotlinx.coroutines.launch
+import usuarioLogadoPreferences
 
 
 class ListaProdutosActivity : AppCompatActivity() {
@@ -21,7 +23,8 @@ class ListaProdutosActivity : AppCompatActivity() {
 
 
     //private val produtoDao by lazy { AppDatabase.instancia(this).produtoDao() }
-    private val dao by lazy { AppDatabase.instancia(this).produtoDao() }
+    private val produtoDao by lazy { AppDatabase.instancia(this).produtoDao() }
+    private val usuarioDao by lazy { AppDatabase.instancia(this).usuarioDao() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -31,10 +34,28 @@ class ListaProdutosActivity : AppCompatActivity() {
         configuraFab()
         lifecycleScope.launch {
 
-            dao.buscaTodos().collect { produtos ->
+            launch {
+                produtoDao.buscaTodos().collect { produtos ->
 
-                adapter.atualiza(produtos)
+                    adapter.atualiza(produtos)
+                }
             }
+
+            dataStore.data.collect{preferences ->
+                preferences[usuarioLogadoPreferences]?. let { usuarioId ->
+                    usuarioDao.buscaPorId(usuarioId).collect{
+
+                    }
+                }
+            }
+
+//            intent.getStringExtra("CHAVE_USUARIO_ID")?.let { usuarioId ->
+//                usuarioDao.buscaPorId(usuarioId).collect {
+//                    Toast.makeText(this@ListaProdutosActivity, "${it.nome} logado!", Toast.LENGTH_SHORT)
+//                        .show()
+//                }
+//
+//            }
         }
     }
 
@@ -52,19 +73,19 @@ class ListaProdutosActivity : AppCompatActivity() {
             when (item.itemId) {
 
                 R.id.menu_lista_produtos_ordenar_nome_asc ->
-                    dao.buscaTodosOrdenadoPorNomeAsc()
+                    produtoDao.buscaTodosOrdenadoPorNomeAsc()
                 R.id.menu_lista_produtos_ordenar_nome_desc ->
-                    dao.buscaTodosOrdenadoPorNomeDesc()
+                    produtoDao.buscaTodosOrdenadoPorNomeDesc()
                 R.id.menu_lista_produtos_ordenar_descricao_asc ->
-                    dao.buscaTodosOrdenadoPorDescricaoAsc()
+                    produtoDao.buscaTodosOrdenadoPorDescricaoAsc()
                 R.id.menu_lista_produtos_ordenar_descricao_desc ->
-                    dao.buscaTodosOrdenadoPorDescricaoDesc()
+                    produtoDao.buscaTodosOrdenadoPorDescricaoDesc()
                 R.id.menu_lista_produtos_ordenar_valor_asc ->
-                    dao.buscaTodosOrdenadoPorValorAsc()
+                    produtoDao.buscaTodosOrdenadoPorValorAsc()
                 R.id.menu_lista_produtos_ordenar_valor_desc ->
-                    dao.buscaTodosOrdenadoPorValorDesc()
+                    produtoDao.buscaTodosOrdenadoPorValorDesc()
                 R.id.menu_lista_produtos_ordenar_sem_ordem ->
-                    dao.buscaTodos()
+                    produtoDao.buscaTodos()
                 else -> null
             }?.collect { produtos ->
 
@@ -102,7 +123,7 @@ class ListaProdutosActivity : AppCompatActivity() {
             vaiParaDetalhesProduto(produto.id)
         }
         adapter.quandoClicaEmEditar = { produto ->
-            
+
             vaiParaFormularioProduto(produto.id)
         }
         adapter.quandoClicaEmRemover = {
@@ -113,7 +134,7 @@ class ListaProdutosActivity : AppCompatActivity() {
             ).show()
             lifecycleScope.launch {
 
-                dao.remove(it)
+                produtoDao.remove(it)
             }
         }
     }

@@ -47,7 +47,6 @@ class DetalhesProdutoActivity : AppCompatActivity() {
         }
     }
 
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
 
         menuInflater.inflate(R.menu.menu_detalhes_produto, menu)
@@ -82,7 +81,6 @@ class DetalhesProdutoActivity : AppCompatActivity() {
             startActivity(this)
         }
     }
-
 
     private fun formataParaMoedaBrasileira(valor: BigDecimal): String {
 

@@ -21,6 +21,7 @@
             android:label="@string/title_activity_formulario_cadastro_usuario"
             android:theme="@style/Theme.Orgs.NoActionBar" />
         <activity
+            android:theme="@style/Theme.Orgs.NoActionBar"
             android:name=".ui.activity.LoginActivity"
             android:exported="true">
             <intent-filter>
