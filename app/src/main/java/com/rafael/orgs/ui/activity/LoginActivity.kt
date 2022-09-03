@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.lifecycleScope
 import com.rafael.orgs.database.AppDatabase
 import com.rafael.orgs.databinding.ActivityLoginBinding
+import com.rafael.orgs.extensions.toHash
 import com.rafael.orgs.extensions.vaiPara
 import dataStore
 import kotlinx.coroutines.launch
@@ -43,7 +44,7 @@ class LoginActivity : AppCompatActivity() {
     private fun configuraBotaoEntrar() {
         binding.activityLoginBotaoEntrar.setOnClickListener {
             val usuario = binding.activityLoginUsuario.text.toString()
-            val senha = binding.activityLoginSenha.text.toString()
+            val senha = binding.activityLoginSenha.text.toString().toHash()
             lifecycleScope.launch {
 
                 usuarioDao.autentica(usuario, senha)?.let { usuario ->

@@ -6,6 +6,7 @@ import androidx.lifecycle.lifecycleScope
 import com.rafael.orgs.database.AppDatabase
 import com.rafael.orgs.databinding.ActivityFormularioProdutoBinding
 import com.rafael.orgs.extensions.tentaCarregarImagem
+import com.rafael.orgs.extensions.toHash
 import com.rafael.orgs.model.Produto
 import com.rafael.orgs.ui.dialog.FormImgDialog
 import dataStore
@@ -90,7 +91,7 @@ class FormularioProdutoActivity : AppCompatActivity() {
     private fun criaProduto(): Produto {
         val nome = binding.formProdutoTietNome.text.toString()
         val descricao = binding.formProdutoTietDescricao.text.toString()
-        val valorTexto = binding.formProdutoTietValor.text.toString()
+        val valorTexto = binding.formProdutoTietValor.text.toString().toHash()
         val valor = if (valorTexto.isBlank()) BigDecimal.ZERO else BigDecimal(valorTexto)
 
         return Produto(
